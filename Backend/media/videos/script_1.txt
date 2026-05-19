@@ -1,0 +1,9 @@
+# Introduction to Machine Learning  Hello everyone.  In this
+video, we will learn about Machine Learning, one of the most
+important fields in modern technology and artificial
+intelligence.  Machine Learning, often called ML, is a
+branch of AI that enables computers to learn from data and
+improve their performance without being explicitly
+programmed for every task.  Instead of writing fixed rules,
+we train machines using examples and patterns from data.
+---  # What is Machine Learning?  Machine

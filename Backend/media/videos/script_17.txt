@@ -1,0 +1,9 @@
+Hello everyone, welcome to today’s AI learning session.
+Artificial Intelligence is changing the way humans work and
+communicate.  AI can understand text, images, speech, and
+even human emotions.  Machine Learning helps computers learn
+patterns from data automatically.  Deep Learning is used in
+applications like self-driving cars and voice assistants.
+Generative AI can create images, videos, music, and human-
+like conversations.  Businesses use AI to improve customer
+service and automate repetit

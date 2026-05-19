@@ -1,0 +1,2 @@
+This is an educational test. We are verifying the
+machine-learning-driven black screen mode.

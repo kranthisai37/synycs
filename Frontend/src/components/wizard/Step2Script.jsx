@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Loader2, X, PlayCircle } from 'lucide-react';
 import { videoService } from '../../services/videoService';
+import { API_BASE_URL } from '../../utils/apiConfig';
 
 export default function Step2Script({ data, update, onNext, onBack }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -103,7 +104,7 @@ export default function Step2Script({ data, update, onNext, onBack }) {
                   autoPlay 
                   controls 
                   className="w-full h-full object-contain"
-                  src="http://localhost:8000/media/videos/video_36.mp4"
+                  src={`${API_BASE_URL}/media/videos/video_36.mp4`}
                 >
                   Your browser does not support the video tag.
                 </video>

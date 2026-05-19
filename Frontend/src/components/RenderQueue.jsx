@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { API_API_URL } from '../utils/apiConfig';
 
 export default function RenderQueue() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
     const fetchQueue = () => {
-      fetch('http://localhost:8000/api/videos/queue/')
+      fetch(`${API_API_URL}/videos/queue/`)
         .then(res => res.json())
         .then(data => setItems(data))
         .catch(err => console.error("Queue fetch error", err));

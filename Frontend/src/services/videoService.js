@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_API_URL } from '../utils/apiConfig';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = API_API_URL;
 
 // Add a request interceptor to include the token
 axios.interceptors.request.use((config) => {

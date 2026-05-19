@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Lock, User, Eye, ShieldCheck, Clapperboard, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_BASE_URL, API_API_URL } from '../utils/apiConfig';
 
 export default function Auth({ onLogin }) {
   // Parse URL search parameters synchronously on initialization to avoid timing issues or blink frames
@@ -38,7 +39,7 @@ export default function Auth({ onLogin }) {
       : { username: e.target.email.value, email: e.target.email.value, password: e.target.password.value, name: e.target.name?.value };
 
     try {
-      const response = await fetch(`http://localhost:8000${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -66,7 +67,7 @@ export default function Auth({ onLogin }) {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/api/videos/forgot_password/`, {
+      const response = await fetch(`${API_API_URL}/videos/forgot_password/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: resetEmail })
@@ -100,7 +101,7 @@ export default function Auth({ onLogin }) {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/api/videos/reset_password/`, {
+      const response = await fetch(`${API_API_URL}/videos/reset_password/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: resetToken, password: newPassword })

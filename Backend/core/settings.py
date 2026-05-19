@@ -90,14 +90,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'edu_video_db',
         'USER': 'root',
         'PASSWORD': 'Kranthi@123',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 

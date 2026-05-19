@@ -20,7 +20,7 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication, SessionAuthentication]
     permission_classes = [AllowAny] # Set to AllowAny to troubleshoot deletion issue
 
-    @action(detail=False, methods=['post'], permission_classes=[])
+    @action(detail=False, methods=['post'], permission_classes=[], authentication_classes=[])
     def signup(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -35,7 +35,7 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'username': user.username})
 
-    @action(detail=False, methods=['post'], permission_classes=[])
+    @action(detail=False, methods=['post'], permission_classes=[], authentication_classes=[])
     def login(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -51,7 +51,7 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
         print(f"DEBUG: Login failed for {username}")
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    @action(detail=False, methods=['post'], permission_classes=[])
+    @action(detail=False, methods=['post'], permission_classes=[], authentication_classes=[])
     def forgot_password(self, request):
         email = request.data.get('email')
         print(f"DEBUG: Forgot password request for {email}")
@@ -74,7 +74,8 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
             from django.core import signing
             token = signing.dumps({'user_id': user.id}, salt='password-reset-salt')
             
-            # Dynamically discover the computer's local network IP address
+            # Dynamically discover the frontend origin from request headers (HTTP_ORIGIN or HTTP_REFERER)
+            # This allows it to automatically use the correct port (or lack thereof) the user is browsing on.
             import socket
             def get_local_ip():
                 try:
@@ -86,10 +87,17 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
                 except Exception:
                     return "127.0.0.1"
             
-            local_ip = get_local_ip()
+            frontend_origin = request.META.get('HTTP_ORIGIN') or request.META.get('HTTP_REFERER')
             
-            # Create a single clean link using the computer's network IP
-            reset_url = f"http://{local_ip}:5173/?mode=reset&token={token}"
+            if frontend_origin:
+                from urllib.parse import urlparse
+                parsed_url = urlparse(frontend_origin)
+                frontend_base = f"{parsed_url.scheme}://{parsed_url.netloc}"
+            else:
+                local_ip = get_local_ip()
+                frontend_base = f"http://{local_ip}"
+            
+            reset_url = f"{frontend_base}/?mode=reset&token={token}"
             
             # Send password reset mail
             from django.core.mail import send_mail
@@ -134,7 +142,7 @@ class VideoProjectViewSet(viewsets.ModelViewSet):
                   f"========================================\n")
             return Response({'status': 'Email processed locally (printed to console). To receive it on your phone, configure SMTP in settings.py!'})
 
-    @action(detail=False, methods=['post'], permission_classes=[])
+    @action(detail=False, methods=['post'], permission_classes=[], authentication_classes=[])
     def reset_password(self, request):
         token = request.data.get('token')
         new_password = request.data.get('password')

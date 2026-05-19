@@ -1,0 +1,50 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: edu_video_db
+      MYSQL_ROOT_PASSWORD: Kranthi@123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the backend directory to /app for hot reloading in dev
+      - ./Backend:/app
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=core.settings
+      - DB_HOST=db
+    depends_on:
+      - db
+    command: >
+      sh -c "
+      while ! nc -z db 3306;
+      do
+        echo 'Waiting for MySQL...';
+        sleep 2;
+      done;
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

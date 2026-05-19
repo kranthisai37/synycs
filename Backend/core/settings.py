@@ -95,11 +95,11 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'edu_video_db',
-        'USER': 'root',
-        'PASSWORD': 'Kranthi@123',
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE') or os.environ.get('DB_NAME', 'edu_video_db'),
+        'USER': os.environ.get('MYSQLUSER') or os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD') or os.environ.get('DB_PASSWORD', 'Kranthi@123'),
+        'HOST': os.environ.get('MYSQLHOST') or os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('MYSQLPORT') or os.environ.get('DB_PORT', '3306'),
     }
 }
 

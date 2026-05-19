@@ -1,14 +1,14 @@
 services:
-  db:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: edu_video_db
-      MYSQL_ROOT_PASSWORD: Kranthi@123
-    ports:
-      - "3307:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+  # db:
+  #   image: mysql:8.0
+  #   restart: always
+  #   environment:
+  #     MYSQL_DATABASE: edu_video_db
+  #     MYSQL_ROOT_PASSWORD: Kranthi@123
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - db_data:/var/lib/mysql
 
   backend:
     build:
@@ -23,14 +23,18 @@ services:
     environment:
       - DEBUG=True
       - DJANGO_SETTINGS_MODULE=core.settings
-      - DB_HOST=db
-    depends_on:
-      - db
+      - DB_NAME=railway
+      - DB_USER=root
+      - DB_PASSWORD=tbuFeSwnJJhUmWRbCwqHOyKZRuPDryHx
+      - DB_HOST=ballast.proxy.rlwy.net
+      - DB_PORT=37712
+    # depends_on:
+    #   - db
     command: >
       sh -c "
-      while ! nc -z db 3306;
+      while ! nc -z ballast.proxy.rlwy.net 37712;
       do
-        echo 'Waiting for MySQL...';
+        echo 'Waiting for Railway MySQL...';
         sleep 2;
       done;
       python manage.py migrate &&

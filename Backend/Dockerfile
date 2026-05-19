@@ -20,5 +20,5 @@ COPY . .
 # Expose Django port
 EXPOSE 8000
 
-# Run Django development server (can be changed to gunicorn for production)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run Django production server using Gunicorn
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]

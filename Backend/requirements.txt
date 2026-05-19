@@ -6,3 +6,4 @@ djangorestframework
 edge-tts
 elevenlabs
 gTTS
+gunicorn

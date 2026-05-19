@@ -104,6 +104,12 @@ DATABASES = {
     }
 }
 
+# Self-healing: Render resides outside Railway's internal private network.
+# If HOST is configured as 'mysql.railway.internal', automatically override to the public ballast proxy.
+if DATABASES['default']['HOST'] == 'mysql.railway.internal':
+    DATABASES['default']['HOST'] = 'ballast.proxy.rlwy.net'
+    DATABASES['default']['PORT'] = '37712'
+
 
 
 

@@ -29,6 +29,16 @@ export default function Auth({ onLogin }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordResetSuccess, setPasswordResetSuccess] = useState(false);
 
+  const safeParseJson = async (response) => {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    }
+    const text = await response.text();
+    console.error(`Non-JSON response (status ${response.status}):`, text);
+    return { error: `Server Error ${response.status}: ${text.substring(0, 150)}` };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -45,7 +55,7 @@ export default function Auth({ onLogin }) {
         body: JSON.stringify(payload)
       });
       
-      const data = await response.json();
+      const data = await safeParseJson(response);
       
       if (response.ok) {
         localStorage.setItem('token', data.token);
@@ -56,7 +66,7 @@ export default function Auth({ onLogin }) {
       }
     } catch (err) {
       console.error("Auth error", err);
-      alert("Could not connect to server");
+      alert(err.message || "Could not connect to server");
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +83,7 @@ export default function Auth({ onLogin }) {
         body: JSON.stringify({ email: resetEmail })
       });
       
-      const data = await response.json();
+      const data = await safeParseJson(response);
       if (response.ok) {
         setResetSubmitted(true);
         if (data.status && data.status.includes("printed to console")) {
@@ -84,7 +94,7 @@ export default function Auth({ onLogin }) {
       }
     } catch (err) {
       console.error("Forgot password error", err);
-      alert("Could not connect to server");
+      alert(err.message || "Could not connect to server");
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +117,7 @@ export default function Auth({ onLogin }) {
         body: JSON.stringify({ token: resetToken, password: newPassword })
       });
       
-      const data = await response.json();
+      const data = await safeParseJson(response);
       if (response.ok) {
         setPasswordResetSuccess(true);
         // Clean URL parameters cleanly so reloads don't show the reset screen again
@@ -117,7 +127,7 @@ export default function Auth({ onLogin }) {
       }
     } catch (err) {
       console.error("Reset password error", err);
-      alert("Could not connect to server");
+      alert(err.message || "Could not connect to server");
     } finally {
       setIsLoading(false);
     }

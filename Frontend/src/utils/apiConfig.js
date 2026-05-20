@@ -16,7 +16,7 @@ const getApiBaseUrl = () => {
   }
   
   // If deployed on Render/Railway, fallback to current origin
-  return `${protocol}//${hostname}`;
+  return 'https://synycs.onrender.com';
 };
 
 export const API_BASE_URL = getApiBaseUrl();

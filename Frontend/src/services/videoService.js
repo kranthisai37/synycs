@@ -12,6 +12,41 @@ const handleUnauthorized = () => {
   window.location.reload();
 };
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const readJson = async (url, fallback, cacheKey) => {
+  let lastError;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      sessionStorage.setItem(cacheKey, JSON.stringify(data));
+      return data;
+    } catch (err) {
+      lastError = err;
+      await wait(250 * (attempt + 1));
+    }
+  }
+
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch {
+      sessionStorage.removeItem(cacheKey);
+    }
+  }
+
+  console.warn(`Read request failed for ${url}. Using safe fallback.`, lastError);
+  return fallback;
+};
+
 const apiRequest = async (url, options = {}) => {
   const token = localStorage.getItem('token');
   const method = (options.method || 'GET').toUpperCase();
@@ -66,7 +101,7 @@ const apiRequest = async (url, options = {}) => {
 
 export const videoService = {
   getProjects: async () => {
-    return apiRequest(`${API_BASE_URL}/videos/`);
+    return readJson(`${API_BASE_URL}/videos/`, [], 'videoService.projects');
   },
   
   createProject: async (projectData) => {
@@ -119,11 +154,15 @@ export const videoService = {
   },
   
   getStats: async () => {
-    return apiRequest(`${API_BASE_URL}/videos/stats/`);
+    return readJson(
+      `${API_BASE_URL}/videos/stats/`,
+      { total_videos: 0, rendering_count: 0 },
+      'videoService.stats'
+    );
   },
 
   getQueue: async () => {
-    return apiRequest(`${API_BASE_URL}/videos/queue/`);
+    return readJson(`${API_BASE_URL}/videos/queue/`, [], 'videoService.queue');
   },
 
   shareProject: async (id) => {

@@ -2,14 +2,20 @@
 // in both local development (Vite + Django) and cloud production (Render / Railway).
 
 const getApiBaseUrl = () => {
+  const { protocol, hostname } = window.location;
+
+  // On Vercel, use same-origin requests and let vercel.json proxy /api and /media
+  // to the Django backend. This avoids browser-side CORS/network failures.
+  if (hostname.endsWith('.vercel.app')) {
+    return '';
+  }
+
   // 1. Allow explicit override via Vite environment variables
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL.replace(/\/$/, ''); // strip trailing slash if present
   }
-
-  // 2. Otherwise, dynamically derive it based on the browser's hostname
-  const { protocol, hostname } = window.location;
   
+  // 2. Otherwise, dynamically derive it based on the browser's hostname
   // If running locally, point to Django's dev server port 8000
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return `${protocol}//${hostname}:8000`;

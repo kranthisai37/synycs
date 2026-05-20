@@ -1,5 +1,4 @@
-fetch('https://synycs.onrender.com/api/health/')
-  .catch(() => {});
+import { API_API_URL } from './utils/apiConfig';
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -10,6 +9,9 @@ import Auth from './components/Auth';
 import RenderQueue from './components/RenderQueue';
 import AccountSettings from './components/AccountSettings';
 import Settings from './components/Settings';
+
+fetch(`${API_API_URL}/health/`)
+  .catch(() => {});
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -106,4 +108,3 @@ function App() {
 }
 
 export default App;
-

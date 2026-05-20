@@ -14,20 +14,24 @@ const handleUnauthorized = () => {
 
 const apiRequest = async (url, options = {}) => {
   const token = localStorage.getItem('token');
-  const headers = new Headers(options.headers || {});
+  const method = (options.method || 'GET').toUpperCase();
+  const headers = { ...(options.headers || {}) };
 
-  if (token && !headers.has('Authorization')) {
-    headers.set('Authorization', `Token ${token}`);
+  if (token && method !== 'GET' && !headers.Authorization) {
+    headers.Authorization = `Token ${token}`;
   }
 
   const body = options.body;
   const isFormData = body instanceof FormData;
-  if (body && !isFormData && !headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json');
+  if (body && !isFormData && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
   }
 
   const response = await fetch(url, {
     ...options,
+    method,
+    mode: 'cors',
+    credentials: 'omit',
     headers,
     body: body && !isFormData && typeof body !== 'string' ? JSON.stringify(body) : body,
   });

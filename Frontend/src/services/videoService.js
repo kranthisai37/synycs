@@ -27,14 +27,16 @@ const apiRequest = async (url, options = {}) => {
     headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(url, {
-    ...options,
-    method,
-    mode: 'cors',
-    credentials: 'omit',
-    headers,
-    body: body && !isFormData && typeof body !== 'string' ? JSON.stringify(body) : body,
-  });
+  const response = method === 'GET'
+    ? await fetch(url)
+    : await fetch(url, {
+        ...options,
+        method,
+        mode: 'cors',
+        credentials: 'omit',
+        headers,
+        body: body && !isFormData && typeof body !== 'string' ? JSON.stringify(body) : body,
+      });
 
   if (response.status === 401) {
     handleUnauthorized();

@@ -26,12 +26,17 @@ def home(request):
 
 from django.urls import re_path
 from videos.views import serve_media_with_range
+from django.http import JsonResponse
+
+def health(request):
+    return JsonResponse({'status': 'ok'})
 
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/', include('videos.urls')),
     re_path(r'^media/(?P<path>.*)$', serve_media_with_range, name='serve_media_with_range'),
+    path('api/health/', health, name='health'),
 ]
 
 

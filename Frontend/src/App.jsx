@@ -1,3 +1,5 @@
+fetch('https://synycs.onrender.com/api/health/')
+  .catch(() => {});
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';

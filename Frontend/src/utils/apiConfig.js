@@ -4,9 +4,10 @@
 const getApiBaseUrl = () => {
   const { protocol, hostname } = window.location;
 
-  // On Vercel, use same-origin requests and let vercel.json proxy /api and /media
-  // to the Django backend. This avoids browser-side CORS/network failures.
-  if (hostname.endsWith('.vercel.app')) {
+  // Optional: use same-origin Vercel rewrites only when explicitly enabled.
+  // The deployed project currently does not apply vercel.json rewrites, so the
+  // default production path should call the Render backend directly.
+  if (import.meta.env.VITE_USE_VERCEL_PROXY === 'true' && hostname.endsWith('.vercel.app')) {
     return '';
   }
 
